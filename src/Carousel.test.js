@@ -1,6 +1,8 @@
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, getByTestId } from "@testing-library/react";
 import Carousel from "./Carousel";
 import TEST_IMAGES from "./_testCommon.js";
+import photos from "./photos";
+
 
 // smoke test
 it("renders without crashing", function () {
@@ -82,4 +84,20 @@ it("works when you click on the left arrow", function () {
   expect(
     container.querySelector('img[alt="testing image 2"]')
   ).not.toBeInTheDocument();
+});
+
+// test that the left arrow is not shown when on the first image
+it('left arrow is missing on first image and right arrow is missing on last image', () => {
+  const { queryByTestId } = render(<Carousel photos={photos} title="Test Carousel" />);
+
+  // Check if left arrow is missing on the first image
+  expect(queryByTestId('left-arrow')).toBeNull();
+
+  // Move to the last image
+  photos.forEach(() => {
+    fireEvent.click(getByTestId('right-arrow'));
+  });
+
+  // Check if right arrow is missing on the last image
+  expect(queryByTestId('right-arrow')).toBeNull();
 });
